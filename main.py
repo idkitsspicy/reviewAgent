@@ -1,6 +1,3 @@
-# ==============================
-# UPDATE app/main.py
-# ==============================
 
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
@@ -9,6 +6,7 @@ from reviews.memory_engine import update_memory_profile
 from firebase_config import db
 from reviews.reply_live import post_reply
 from reviews.memory_engine import get_memory_profile
+from agent.workflow import run_live_agent
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -153,3 +151,77 @@ def save_settings(automation_mode: str = Form(...)):
     })
 
     return RedirectResponse("/", status_code=303)
+
+@app.post("/sync-reviews")
+def sync_reviews():
+    profile_id = "69da50287dea335c2bd8718b"
+
+    run_live_agent(profile_id)
+
+    return RedirectResponse("/", status_code=303)
+
+@app.get("/onboarding", response_class=HTMLResponse)
+def onboarding_page(request: Request):
+    return templates.TemplateResponse(
+        "onboarding.html",
+        {"request": request}
+    )
+@app.post("/onboarding")
+def save_onboarding(
+    business_name: str = Form(...),
+    email: str = Form(...),
+    profile_id: str = Form(...),
+    automation_mode: str = Form(...)
+):
+    db.collection("users").document(email).set({
+        "business_name": business_name,
+        "email": email,
+        "profile_id": profile_id,
+        "automation_mode": automation_mode
+    })
+
+    db.collection("business_profiles").document(profile_id).set({
+        "profile_id": profile_id,
+        "automation_mode": automation_mode
+    })
+
+    return RedirectResponse("/", status_code=303)
+
+@app.get("/analytics", response_class=HTMLResponse)
+def analytics_page(request: Request):
+    docs = db.collection("reviews").stream()
+    reviews = [doc.to_dict() for doc in docs]
+
+    total_reviews = len(reviews)
+
+    positive_count = sum(
+        1 for r in reviews if r["rating"] >= 4
+    )
+
+    negative_count = sum(
+        1 for r in reviews if r["rating"] < 4
+    )
+
+    average_rating = (
+        round(sum(r["rating"] for r in reviews) / total_reviews, 1)
+        if total_reviews > 0 else 0
+    )
+
+    # Complaint frequency
+    intents = [r["intent"] for r in reviews]
+    most_common_intent = (
+        max(set(intents), key=intents.count)
+        if intents else "None"
+    )
+
+    return templates.TemplateResponse(
+        "analytics.html",
+        {
+            "request": request,
+            "total_reviews": total_reviews,
+            "positive_count": positive_count,
+            "negative_count": negative_count,
+            "average_rating": average_rating,
+            "most_common_intent": most_common_intent
+        }
+    )
