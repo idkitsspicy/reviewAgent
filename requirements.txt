@@ -8,5 +8,3 @@ google-cloud-firestore
 groq
 jinja2
 python-multipart
-transformers
-torch
