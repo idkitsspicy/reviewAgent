@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+requests
+python-dotenv
+firebase-admin
+groq
+jinja2
+python-multipart
+google-cloud-firestore
