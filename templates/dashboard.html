@@ -19,8 +19,9 @@
 
         <nav class="flex-1 p-4 space-y-2">
             <a href="#" class="block px-4 py-3 rounded-xl bg-blue-100 text-blue-700 font-medium">Dashboard</a>
-            <a href="#" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Reviews</a>
-            <a href="#" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Analytics</a>
+            <a href="/analytics" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">
+    Analytics
+</a>
             <a href="/settings" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Settings</a>
         </nav>
 
@@ -46,9 +47,11 @@
                 <p class="text-gray-500">Manage and monitor AI-powered review responses</p>
             </div>
 
-            <button class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow hover:bg-blue-700">
-                Refresh Reviews
-            </button>
+            <form action="/sync-reviews" method="post">
+    <button class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow hover:bg-blue-700">
+        Sync Reviews
+    </button>
+</form>
         </div>
 
         <!-- Top Stats -->
