@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReplyPilot AI Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg flex flex-col">
+        <div class="p-6 border-b">
+            <h1 class="text-2xl font-bold text-gray-800">ReplyPilot AI</h1>
+            <p class="text-sm text-gray-500">Review Automation</p>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="#" class="block px-4 py-3 rounded-xl bg-blue-100 text-blue-700 font-medium">Dashboard</a>
+            <a href="#" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Reviews</a>
+            <a href="#" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Analytics</a>
+            <a href="/settings" class="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-700">Settings</a>
+        </nav>
+
+        <div class="p-4 border-t text-sm text-gray-500">
+    Automation Mode:
+    <span class="font-semibold text-green-600">
+        {% if automation_mode == "smart_auto" %}
+            Smart Auto
+        {% else %}
+            Approval Mode
+        {% endif %}
+    </span>
+</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-8">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
+                <p class="text-gray-500">Manage and monitor AI-powered review responses</p>
+            </div>
+
+            <button class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow hover:bg-blue-700">
+                Refresh Reviews
+            </button>
+        </div>
+
+        <!-- Top Stats -->
+        <div class="grid grid-cols-4 gap-6 mb-8">
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <p class="text-gray-500 text-sm">Total Reviews</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{ reviews|length }}</h3>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <p class="text-gray-500 text-sm">Pending Approval</p>
+                <h3 class="text-3xl font-bold text-yellow-500">{{ pending_count }}</h3>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <p class="text-gray-500 text-sm">Auto-Replied</p>
+                <h3 class="text-3xl font-bold text-green-600">{{ auto_replied_count }}</h3>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <p class="text-gray-500 text-sm">Avg Rating</p>
+                <h3 class="text-3xl font-bold text-blue-600">4.7</h3>
+            </div>
+
+        </div>
+
+        <!-- Reviews List -->
+        <div class="space-y-6">
+
+            {% for review in reviews %}
+            <div class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
+
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-lg font-semibold text-gray-800">{{ review.text }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Rating: ⭐ {{ review.rating }}
+                        </p>
+                    </div>
+
+                    <span class="
+                        px-4 py-2 rounded-full text-sm font-medium
+                        {% if review.intent == 'POSITIVE' %}
+                            bg-green-100 text-green-700
+                        {% elif review.intent == 'NEGATIVE' %}
+                            bg-red-100 text-red-700
+                        {% else %}
+                            bg-yellow-100 text-yellow-700
+                        {% endif %}
+                    ">
+                        {{ review.intent }}
+                    </span>
+                </div>
+
+                <!-- AI Draft -->
+                <div class="bg-gray-50 rounded-xl p-4 mb-4 border">
+                    <p class="text-sm text-gray-500 mb-1">AI Suggested Reply</p>
+                    <p class="text-gray-800">{{ review.response }}</p>
+                </div>
+
+                <!-- Actions -->
+                <!-- ==============================
+UPDATE dashboard.html BUTTON SECTION
+============================== -->
+
+<div class="flex gap-4">
+
+    {% if review.status == "draft" %}
+    <form action="/approve/{{ review.review_id.replace('/', '_') }}" method="post">
+        <button class="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700">
+            Approve
+        </button>
+    </form>
+     <a href="/edit/{{ review.doc_id }}"
+       class="bg-gray-200 text-gray-700 px-5 py-2 rounded-xl hover:bg-gray-300">
+       Edit
+    </a>
+    {% endif %}
+
+    {% if review.status == "approved" %}
+    <span class="text-green-700 font-semibold">Approved & Posted</span>
+    {% endif %}
+
+</div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>
