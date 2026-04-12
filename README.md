@@ -1,5 +1,5 @@
 
-# AI Review Response Agent
+# ReplyPilot AI - an AI Review Response Agent
 
 An intelligent AI-powered SaaS platform that automates customer review management for businesses by generating smart, multilingual, adaptive responses to Google Business reviews.
 
