@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-10">
+
+<div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow">
+
+    <h1 class="text-2xl font-bold mb-6">Automation Settings</h1>
+
+    <form method="post" action="/settings">
+
+        <label class="block mb-4 font-medium">
+            Select Automation Mode:
+        </label>
+
+        <select name="automation_mode" class="w-full border rounded-xl p-3 mb-6">
+
+            <option value="approval"
+                {% if settings.automation_mode == "approval" %}selected{% endif %}>
+                Approval Mode
+            </option>
+
+            <option value="smart_auto"
+                {% if settings.automation_mode == "smart_auto" %}selected{% endif %}>
+                Smart Auto Mode
+            </option>
+
+        </select>
+
+        <button class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700">
+            Save Settings
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
