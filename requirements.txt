@@ -1,11 +1,12 @@
 fastapi
 uvicorn
+gunicorn
 requests
 python-dotenv
 firebase-admin
+google-cloud-firestore
 groq
 jinja2
 python-multipart
-google-cloud-firestore
-gunicorn
 transformers
+torch
