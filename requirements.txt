@@ -7,3 +7,4 @@ groq
 jinja2
 python-multipart
 google-cloud-firestore
+gunicorn
